@@ -1,7 +1,12 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  updateProfile,
+} from "firebase/auth";
 import auth from "../../Firebase.config";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const RegisterHero = () => {
   const [regError, setRegError] = useState("");
@@ -10,10 +15,11 @@ const RegisterHero = () => {
 
   const handleRegister = (e) => {
     e.preventDefault();
+    const name = e.target.name.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
     const accepted = e.target.terms.checked;
-    console.log(email, password);
+    console.log(email, password, name);
 
     // reset states
     setRegError("");
@@ -36,6 +42,22 @@ const RegisterHero = () => {
       .then((result) => {
         console.log(result.user);
         setSuccess("user created successfully");
+
+        // update username
+        updateProfile(result.user, {
+          displayName: name,
+        })
+          .then(() => {
+            console.log("userName successfully created");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
+        // email verified
+        sendEmailVerification(result.user).then(() => {
+          alert("Email verification sent!!");
+        });
       })
       .catch((error) => {
         console.error(error);
@@ -57,6 +79,18 @@ const RegisterHero = () => {
           </div>
           <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
             <form onSubmit={handleRegister} className="card-body">
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Username</span>
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Enter your username"
+                  className="input input-bordered"
+                  required
+                />
+              </div>
               <div className="form-control">
                 <label className="label">
                   <span className="label-text">Email</span>
@@ -97,7 +131,13 @@ const RegisterHero = () => {
                     <a className="text-purple-600">Terms and Conditions</a>
                   </label>
                 </div>
-                <button className="btn btn-primary">Register</button>
+                <p>
+                  Already have an account? Please{" "}
+                  <Link to={"/Login"} className="text-red-600 font-bold">
+                    Login
+                  </Link>
+                </p>
+                <button className="btn btn-primary ">Register</button>
               </div>
             </form>
           </div>

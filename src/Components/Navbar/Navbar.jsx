@@ -43,6 +43,26 @@ const Navbar = () => {
           RegisterHero
         </NavLink>
       </li>
+      <li>
+        <NavLink
+          to="/Log"
+          className={({ isActive, isPending }) =>
+            isPending ? "pending" : isActive ? "active" : ""
+          }
+        >
+          Login2
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
+          to="/Reg"
+          className={({ isActive, isPending }) =>
+            isPending ? "pending" : isActive ? "active" : ""
+          }
+        >
+          Reg2
+        </NavLink>
+      </li>
     </>
   );
 
